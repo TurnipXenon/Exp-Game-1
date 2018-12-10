@@ -97,7 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 131e0ee092e07bf47a91e81bec2b3638, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nodesContainer: {fileID: 0}
+  nodeScript: {fileID: 0}
+  agent: {fileID: 0}
 --- !u!135 &135119335704671650
 SphereCollider:
   m_ObjectHideFlags: 1
