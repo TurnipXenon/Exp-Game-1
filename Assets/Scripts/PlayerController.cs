@@ -28,7 +28,6 @@ public class PlayerController : MonoBehaviour
     private int validDirection; // use bitwise
     private Vector3 destination;
  
-    private float increment;
     public float mainIncrement;
     public float secondaryIncrement;
     private Vector3 staticCenter;
@@ -37,7 +36,6 @@ public class PlayerController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        increment = incrementRadius / movementFrame;
         currentDirection = BIT_RIGHT;
         validDirection = BIT_RIGHT | BIT_LEFT;
         staticCenter = CloneVector(transform.position);
