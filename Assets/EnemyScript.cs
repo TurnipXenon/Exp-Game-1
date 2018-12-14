@@ -21,4 +21,13 @@ public class EnemyScript : MonoBehaviour {
             }
         }
 	}
+
+    public void ResetEnemies()
+    {
+        EnemyController[] transformList = GetComponentsInChildren<EnemyController>();
+        foreach (EnemyController item in transformList)
+        {
+            item.ResetDestination();
+        }
+    }
 }

@@ -42,4 +42,10 @@ public class EnemyController : MonoBehaviour {
             agent.SetDestination(destination);
         }
     }
+
+    public void ResetDestination()
+    {
+        Vector3 resetLocation = new Vector3(0,0,0);
+        agent.Warp(resetLocation);
+    }
 }

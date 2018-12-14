@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     public Text lifeText;
     public Text gameOverText;
     public string gameOverMessage;
+    public PacdotScript pacdotScript;
+    public EnemyScript enemyScript;
 
     public float movementFrame = 10.0f;
     public float incrementRadius = 0.5f;
@@ -216,6 +218,17 @@ public class PlayerController : MonoBehaviour
             other.gameObject.SetActive(false);
             score += scoreIncrement;
             SetScoreText();
+
+            bool gameContinue = pacdotScript.RemoveOnePacdot();
+            if (!gameContinue)
+            {
+                // todo change to win condition
+                // reset enemy
+                ResetPlayer();
+                enemyScript.ResetEnemies();
+                // reset pacdots
+                pacdotScript.ResetPacdots();
+            }
         }
         else if (other.CompareTag("SpawnPoint"))
         {
@@ -239,11 +252,16 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                agent.Warp(startPosition);
                 // todo dead animation or transition here
+                ResetPlayer();
                 StartCoroutine(SetInvincible(true));
             }
         }
+    }
+
+    public void ResetPlayer()
+    {
+        agent.Warp(startPosition);
     }
 
     // todo: placeholder
