@@ -1,8 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
+
+// todo add discrete movement (round location)
 
 public class PlayerController : MonoBehaviour
 {
+    public int startLifeCount = 3;
+    public int scoreIncrement = 100;
+    public Text scoreText;
+
     public float movementFrame = 10.0f;
     public float incrementRadius = 0.5f;
     public NavMeshAgent agent;
@@ -32,15 +39,19 @@ public class PlayerController : MonoBehaviour
     public float secondaryIncrement;
     private Vector3 staticCenter;
     private int currentDirection;
+    private int livesLeft = 0;
+    private int score = 0;
 
     // Use this for initialization
     void Start()
     {
+        livesLeft = startLifeCount;
         currentDirection = BIT_RIGHT;
         validDirection = BIT_RIGHT | BIT_LEFT;
         staticCenter = CloneVector(transform.position);
 
         SetDestination(currentDirection);
+        SetScoreText();
     }
 
     private Vector3 CloneVector(Vector3 vector)
@@ -80,6 +91,12 @@ public class PlayerController : MonoBehaviour
         z2 = z;
     }
 
+    //private float RoundToNearestHalf(float num)
+    //{
+    //    return Mathf.Round(num * 2) / 2;
+
+    //}
+
     private void SetNewDestination(int directionBitwise)
     {
         if (AndBitwise(directionBitwise, BIT_UP))
@@ -109,11 +126,11 @@ public class PlayerController : MonoBehaviour
         
         SetIndTarget(mainDirection, mainIncrement, x, z, out x, out z);
         SetIndTarget(secondaryDirection, secondaryIncrement, x, z, out x, out z);
-        
+
+        //float x2 = RoundToNearestHalf(x);
+        //float z2 = RoundToNearestHalf(z);
         return new Vector3(x, y, z);
     }
-
-
 
     private bool IsDirectionHorizontal()
     {
@@ -150,7 +167,6 @@ public class PlayerController : MonoBehaviour
              {
                 //print("Detects hit");
                 agent.SetDestination(hit.position);
-                break;
              }
          }
     }
@@ -182,10 +198,36 @@ public class PlayerController : MonoBehaviour
             {
                 int factor = (movement > 0) ? 0 : 1;
                 movementInput = movementInput | BIT_DIR_ARRAY[(index * 2) + factor];
+                break;
             }
         }
  
         CheckDestination(movementInput);
      }
 
+    public float spawnOffset;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Collectible"))
+        {
+            other.gameObject.SetActive(false);
+            score += scoreIncrement;
+            SetScoreText();
+        }
+        else if (other.CompareTag("SpawnPoint"))
+        {
+            Vector3 position = transform.position;
+            float positionX = -position.x;
+            // put offset
+            positionX = (positionX > 0) ? positionX - spawnOffset : positionX + spawnOffset;
+            Vector3 spawnPosition = new Vector3(positionX, position.y, position.z);
+            agent.Warp(spawnPosition);
+        }
+    }
+
+    private void SetScoreText()
+    {
+        scoreText.text = "Score: " + score.ToString();
+    }
 }

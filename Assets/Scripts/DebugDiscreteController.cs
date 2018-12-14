@@ -35,11 +35,17 @@ public class DebugDiscreteController : MonoBehaviour
        rb.velocity = new Vector3(movement[IND_HORIZONTAL] * speed, 0.0f, movement[IND_VERTICAL] * speed);
     }
 
+
+
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Collectible"))
+        if (other.CompareTag("Collectible"))
         {
             other.gameObject.SetActive(false);
+        }
+        else if (other.CompareTag("SpawnPoint"))
+        {
+            Debug.Log("Spawn hit!");
         }
     }
 }
