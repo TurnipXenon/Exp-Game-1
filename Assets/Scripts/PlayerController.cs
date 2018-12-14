@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using System.Collections;
 
 // todo add discrete movement (round location)
 
@@ -9,6 +10,9 @@ public class PlayerController : MonoBehaviour
     public int startLifeCount = 3;
     public int scoreIncrement = 100;
     public Text scoreText;
+    public Text lifeText;
+    public Text gameOverText;
+    public string gameOverMessage;
 
     public float movementFrame = 10.0f;
     public float incrementRadius = 0.5f;
@@ -18,11 +22,6 @@ public class PlayerController : MonoBehaviour
     private readonly int IND_VERTICAL = 0;
     private readonly string[] AXIS_ARGS = { "Vertical", "Horizontal" };
     private readonly int[] COORD_RANGE = new int[]{0, 1};
-
-    private readonly int IND_UP = 0;
-    private readonly int IND_DOWN = 1;
-    private readonly int IND_LEFT = 2;
-    private readonly int IND_RIGHT = 3;
 
     private readonly static int BIT_UP = 1;
     private readonly static int BIT_DOWN = 2;
@@ -37,6 +36,7 @@ public class PlayerController : MonoBehaviour
  
     public float mainIncrement;
     public float secondaryIncrement;
+    public Vector3 startPosition;
     private Vector3 staticCenter;
     private int currentDirection;
     private int livesLeft = 0;
@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour
         staticCenter = CloneVector(transform.position);
 
         SetDestination(currentDirection);
+        gameOverText.text = "";
         SetScoreText();
     }
 
@@ -167,6 +168,7 @@ public class PlayerController : MonoBehaviour
              {
                 //print("Detects hit");
                 agent.SetDestination(hit.position);
+                break;
              }
          }
     }
@@ -224,6 +226,45 @@ public class PlayerController : MonoBehaviour
             Vector3 spawnPosition = new Vector3(positionX, position.y, position.z);
             agent.Warp(spawnPosition);
         }
+
+        if (!isSafe && other.CompareTag("Enemy"))
+        {
+            livesLeft--;
+            SetLifeCount();
+
+            if (livesLeft <= 0)
+            {
+                gameObject.SetActive(false);
+                gameOverText.text = gameOverMessage;
+            }
+            else
+            {
+                agent.Warp(startPosition);
+                // todo dead animation or transition here
+                StartCoroutine(SetInvincible(true));
+            }
+        }
+    }
+
+    // todo: placeholder
+    private void SetLifeCount()
+    {
+        lifeText.text = "Lives left: " + livesLeft.ToString();
+
+    }
+
+    private bool isSafe = false;
+    public float shortSafeTime;
+    public float longSafeTime;
+
+    public IEnumerator SetInvincible(bool isFast)
+    {
+        isSafe = true;
+        Debug.Log("Safe");
+        float waitTime = (isFast) ? shortSafeTime : longSafeTime;
+        yield return new WaitForSeconds(waitTime);
+        isSafe = false;
+        Debug.Log("No Longer Safe");
     }
 
     private void SetScoreText()
