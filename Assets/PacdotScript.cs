@@ -12,7 +12,6 @@ public class PacdotScript : MonoBehaviour
     {
         pacdotMaxCount = 0;
         CountAllPacdots(gameObject.GetComponentsInChildren<Transform>());
-        Debug.Log("Count of pacdots: " + pacdotCount.ToString());
         pacdotCount = pacdotMaxCount;
     }
 

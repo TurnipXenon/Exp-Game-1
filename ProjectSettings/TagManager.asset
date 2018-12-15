@@ -8,6 +8,7 @@ TagManager:
   - Node
   - Collectible
   - Enemy
+  - Special Collectible
   layers:
   - Default
   - TransparentFX

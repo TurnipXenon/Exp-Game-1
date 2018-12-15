@@ -8,6 +8,7 @@ public class EnemyScript : MonoBehaviour {
 	void Start () {
         int count = 0;
         Collider[] colliders = GetComponentsInChildren<Collider>();
+
         foreach (Collider col1 in colliders)
         {
             foreach (Collider col2 in colliders)
@@ -27,7 +28,15 @@ public class EnemyScript : MonoBehaviour {
         EnemyController[] transformList = GetComponentsInChildren<EnemyController>();
         foreach (EnemyController item in transformList)
         {
-            item.ResetDestination();
+            item.WarpToOrigin();
+        }
+    }
+
+    public void SetAllGhostsMovable(bool isMovable)
+    {
+        foreach (EnemyController item in GetComponentsInChildren<EnemyController>())
+        {
+            item.SetGhostMovable(true);
         }
     }
 }

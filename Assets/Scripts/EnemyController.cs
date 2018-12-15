@@ -10,11 +10,13 @@ public class EnemyController : MonoBehaviour {
 
     private Vector3 destination;
     private int currentNode;
+    private bool isFrozen;
 
 	// Use this for initialization
 	void Start () {
         currentNode = -1; // avoid error
         SetNewDestination();
+        isFrozen = false;
 	}
 	
 	// Update is called once per frame
@@ -36,16 +38,28 @@ public class EnemyController : MonoBehaviour {
 
     void SetNewDestination()
     {
-        if (nodeScript != null && nodeScript.IsReady())
+        if ((nodeScript != null && nodeScript.IsReady()) && !isFrozen)
         {
             nodeScript.GetRandomDestination(currentNode, out currentNode, out destination);
             agent.SetDestination(destination);
         }
     }
 
-    public void ResetDestination()
+    public void WarpToOrigin()
     {
         Vector3 resetLocation = new Vector3(0,0,0);
         agent.Warp(resetLocation);
+    }
+
+    public void GhostEaten()
+    {
+        Vector3 resetLocation = new Vector3(0, 0, 0);
+        agent.SetDestination(resetLocation);
+        isFrozen = true;
+    }
+
+    public void SetGhostMovable(bool isMovable)
+    {
+        isFrozen = false;
     }
 }

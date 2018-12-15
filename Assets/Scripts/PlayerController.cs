@@ -211,23 +211,44 @@ public class PlayerController : MonoBehaviour
 
     public float spawnOffset;
 
+    private bool CollectPacdot(Collider other)
+    {
+        other.gameObject.SetActive(false);
+        score += scoreIncrement;
+        SetScoreText();
+
+        bool gameContinue = pacdotScript.RemoveOnePacdot();
+        if (!gameContinue)
+        {
+            // todo change to win condition
+            // reset enemy
+            ResetPlayer();
+            enemyScript.ResetEnemies();
+            // reset pacdots
+            pacdotScript.ResetPacdots();
+        }
+
+        return gameContinue;
+    }
+
+    private void CollectSpecialPacdot()
+    {
+        StartCoroutine(SetInvincible(false));
+
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Collectible"))
         {
-            other.gameObject.SetActive(false);
-            score += scoreIncrement;
-            SetScoreText();
-
-            bool gameContinue = pacdotScript.RemoveOnePacdot();
-            if (!gameContinue)
+            CollectPacdot(other);
+        }
+        else if (other.CompareTag("Special Collectible"))
+        {
+            if (CollectPacdot(other))
             {
-                // todo change to win condition
-                // reset enemy
-                ResetPlayer();
-                enemyScript.ResetEnemies();
-                // reset pacdots
-                pacdotScript.ResetPacdots();
+                // todo invincibility
+                CollectSpecialPacdot();
             }
         }
         else if (other.CompareTag("SpawnPoint"))
@@ -240,21 +261,28 @@ public class PlayerController : MonoBehaviour
             agent.Warp(spawnPosition);
         }
 
-        if (!isSafe && other.CompareTag("Enemy"))
+        if (other.CompareTag("Enemy"))
         {
-            livesLeft--;
-            SetLifeCount();
+            if (!isSafe)
+            {
+                livesLeft--;
+                SetLifeCount();
 
-            if (livesLeft <= 0)
-            {
-                gameObject.SetActive(false);
-                gameOverText.text = gameOverMessage;
+                if (livesLeft <= 0)
+                {
+                    gameObject.SetActive(false);
+                    gameOverText.text = gameOverMessage;
+                }
+                else
+                {
+                    // todo dead animation or transition here
+                    ResetPlayer();
+                    StartCoroutine(SetInvincible(true));
+                }
             }
-            else
+            else if (edibleGhost)
             {
-                // todo dead animation or transition here
-                ResetPlayer();
-                StartCoroutine(SetInvincible(true));
+                other.GetComponent<EnemyController>().GhostEaten();
             }
         }
     }
@@ -274,14 +302,25 @@ public class PlayerController : MonoBehaviour
     private bool isSafe = false;
     public float shortSafeTime;
     public float longSafeTime;
+    private bool edibleGhost = false;
 
     public IEnumerator SetInvincible(bool isFast)
     {
         isSafe = true;
         Debug.Log("Safe");
         float waitTime = (isFast) ? shortSafeTime : longSafeTime;
+        if (!isFast)
+        {
+            // do when eating special
+            edibleGhost = true;
+        }
         yield return new WaitForSeconds(waitTime);
         isSafe = false;
+        if (!isFast)
+        {
+            edibleGhost = false;
+            enemyScript.SetAllGhostsMovable(true);
+        }
         Debug.Log("No Longer Safe");
     }
 
