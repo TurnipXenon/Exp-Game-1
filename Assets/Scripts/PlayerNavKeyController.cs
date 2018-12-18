@@ -5,7 +5,7 @@ using System.Collections;
 
 // todo add discrete movement (round location)
 
-public class PlayerController : MonoBehaviour
+public class PlayerNavKeyController : MonoBehaviour
 {
     public int startLifeCount = 3;
     public int scoreIncrement = 100;

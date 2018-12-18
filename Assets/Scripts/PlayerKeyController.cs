@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DebugDiscreteController : MonoBehaviour
+public class PlayerKeyController : MonoBehaviour
 {
-
-    public float speed = 5;
+    public float speed;
+    public float discreteIncrement;
 
     private readonly int IND_HORIZONTAL = 0;
     private readonly int IND_VERTICAL = 1;
@@ -32,20 +32,6 @@ public class DebugDiscreteController : MonoBehaviour
 
     void FixedUpdate()
     {
-       rb.velocity = new Vector3(movement[IND_HORIZONTAL] * speed, 0.0f, movement[IND_VERTICAL] * speed);
-    }
-
-
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Collectible"))
-        {
-            other.gameObject.SetActive(false);
-        }
-        else if (other.CompareTag("SpawnPoint"))
-        {
-            Debug.Log("Spawn hit!");
-        }
+        rb.velocity = new Vector3(movement[IND_HORIZONTAL] * speed, 0.0f, movement[IND_VERTICAL] * speed);
     }
 }

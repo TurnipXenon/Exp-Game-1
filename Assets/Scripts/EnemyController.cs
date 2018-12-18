@@ -17,6 +17,7 @@ public class EnemyController : MonoBehaviour {
         currentNode = -1; // avoid error
         SetNewDestination();
         isFrozen = false;
+        agent.updateRotation = false;
 	}
 	
 	// Update is called once per frame
@@ -61,5 +62,14 @@ public class EnemyController : MonoBehaviour {
     public void SetGhostMovable(bool isMovable)
     {
         isFrozen = false;
+    }
+
+    private void LateUpdate()
+    {
+        // from: https://forum.unity.com/threads/solved-navmesh-agent-instant-turn-in-direction-he-moves.521794/
+        if (agent.velocity.sqrMagnitude > Mathf.Epsilon)
+        {
+            transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
+        }
     }
 }

@@ -656,6 +656,7 @@ GameObject:
   - component: {fileID: 102207306}
   - component: {fileID: 102207305}
   - component: {fileID: 102207304}
+  - component: {fileID: 102207307}
   m_Layer: 0
   m_Name: VWallLone
   m_TagString: Untagged
@@ -688,7 +689,7 @@ BoxCollider:
   m_GameObject: {fileID: 102207302}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -739,6 +740,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 102207302}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!136 &102207307
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102207302}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.15
+  m_Height: 1
+  m_Direction: 0
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &102918915 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4254025652993594, guid: c9ef638ec75160a49a4dc38a6e7e12ac,
@@ -7787,6 +7802,7 @@ GameObject:
   - component: {fileID: 790877872}
   - component: {fileID: 790877871}
   - component: {fileID: 790877870}
+  - component: {fileID: 790877873}
   m_Layer: 0
   m_Name: VWallLone
   m_TagString: Untagged
@@ -7819,7 +7835,7 @@ BoxCollider:
   m_GameObject: {fileID: 790877868}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -7870,6 +7886,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 790877868}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!136 &790877873
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 790877868}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.15
+  m_Height: 1
+  m_Direction: 0
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &793518423
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8613,6 +8643,7 @@ GameObject:
   - component: {fileID: 854395680}
   - component: {fileID: 854395679}
   - component: {fileID: 854395678}
+  - component: {fileID: 854395681}
   m_Layer: 0
   m_Name: TopNotch 2
   m_TagString: Untagged
@@ -8645,7 +8676,7 @@ BoxCollider:
   m_GameObject: {fileID: 854395676}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -8696,6 +8727,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 854395676}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!136 &854395681
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854395676}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.15
+  m_Height: 1
+  m_Direction: 0
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &856405461
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14722,6 +14767,7 @@ GameObject:
   - component: {fileID: 1491765191}
   - component: {fileID: 1491765190}
   - component: {fileID: 1491765189}
+  - component: {fileID: 1491765192}
   m_Layer: 0
   m_Name: NorthTTop
   m_TagString: Untagged
@@ -14754,7 +14800,7 @@ BoxCollider:
   m_GameObject: {fileID: 1491765187}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -14805,6 +14851,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1491765187}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!136 &1491765192
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1491765187}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.15
+  m_Height: 1
+  m_Direction: 0
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1493095086
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18568,12 +18628,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1900517614}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fafdc4a199f74148941362b351fe7cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 10
+  discreteIncrement: 0.5
 --- !u!54 &1900517620
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -18586,7 +18647,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 50
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
@@ -18597,10 +18658,10 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1900517614}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 100
+  m_Speed: 10
   m_Acceleration: 100
   avoidancePriority: 50
   m_AngularSpeed: 300
@@ -18632,13 +18693,8 @@ MonoBehaviour:
   gameOverMessage: Game Over
   pacdotScript: {fileID: 683646926}
   enemyScript: {fileID: 755817973}
-  movementFrame: 10
-  incrementRadius: 0.5
   agent: {fileID: 1900517621}
-  mainIncrement: 0.6
-  secondaryIncrement: 0.25
   startPosition: {x: 0, y: 0.5, z: -5}
-  sampleMovementRadius: 1
   spawnOffset: 0.3
   shortSafeTime: 1
   longSafeTime: 10
@@ -21712,6 +21768,7 @@ GameObject:
   - component: {fileID: 2117597532}
   - component: {fileID: 2117597531}
   - component: {fileID: 2117597530}
+  - component: {fileID: 2117597533}
   m_Layer: 0
   m_Name: NorthTTop
   m_TagString: Untagged
@@ -21744,7 +21801,7 @@ BoxCollider:
   m_GameObject: {fileID: 2117597528}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -21795,6 +21852,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2117597528}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!136 &2117597533
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2117597528}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.15
+  m_Height: 1
+  m_Direction: 0
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &2123254141
 PrefabInstance:
   m_ObjectHideFlags: 0
