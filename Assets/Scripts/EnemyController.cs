@@ -35,6 +35,26 @@ public class EnemyController : MonoBehaviour {
             }
         }
 
+        InstantlyTurn();
+    }
+
+    // from: http://answers.unity.com/answers/1344996/view.html
+    // from 2: http://answers.unity.com/answers/988754/view.html
+    public float rotSpeed;
+    public float turningDistance;
+    public float acceleration = 2.0f;
+    public float deceleration = 60.0f;
+
+    private void InstantlyTurn()
+    {
+        if ((destination - transform.position).magnitude < turningDistance)
+        {
+            agent.acceleration = deceleration;
+        }
+        else
+        {
+            agent.acceleration = acceleration;
+        }
     }
 
     void SetNewDestination()
@@ -66,7 +86,7 @@ public class EnemyController : MonoBehaviour {
 
     private void LateUpdate()
     {
-        // from: https://forum.unity.com/threads/solved-navmesh-agent-instant-turn-in-direction-he-moves.521794/
+        //// from: https://forum.unity.com/threads/solved-navmesh-agent-instant-turn-in-direction-he-moves.521794/
         if (agent.velocity.sqrMagnitude > Mathf.Epsilon)
         {
             transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);

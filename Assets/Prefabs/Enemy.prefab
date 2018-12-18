@@ -104,10 +104,10 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 0.1
-  m_Acceleration: 8
+  m_Speed: 0.5
+  m_Acceleration: 2
   avoidancePriority: 50
-  m_AngularSpeed: 999
+  m_AngularSpeed: 120
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -130,6 +130,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeScript: {fileID: 0}
   agent: {fileID: 0}
+  rotSpeed: 20
+  turningDistance: 0.1
+  acceleration: 3.5
+  deceleration: 80
 --- !u!54 &54997989295834654
 Rigidbody:
   m_ObjectHideFlags: 0
