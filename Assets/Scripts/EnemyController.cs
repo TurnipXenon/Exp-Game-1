@@ -8,23 +8,27 @@ public class EnemyController : MonoBehaviour {
     public NodeScript nodeScript;
     public NavMeshAgent agent;
 
+    private Material material;
     private Vector3 destination;
     private int currentNode;
-    private bool isFrozen;
+    private bool isMovable;
+    private Color defaultColor;
 
 	// Use this for initialization
 	void Start () {
         currentNode = -1; // avoid error
         SetNewDestination();
-        isFrozen = false;
+        isMovable = true;
         agent.updateRotation = false;
+        material = GetComponent<Renderer>().material;
+        defaultColor = material.color;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
         // from https://answers.unity.com/questions/324589/how-can-i-tell-when-a-navmesh-has-reached-its-dest.html
-        if (!agent.pathPending)
+        if (!agent.pathPending && agent.isOnNavMesh)
         {
             if (agent.remainingDistance <= agent.stoppingDistance)
             {
@@ -59,7 +63,7 @@ public class EnemyController : MonoBehaviour {
 
     void SetNewDestination()
     {
-        if ((nodeScript != null && nodeScript.IsReady()) && !isFrozen)
+        if ((nodeScript != null && nodeScript.IsReady()) && isMovable)
         {
             nodeScript.GetRandomDestination(currentNode, out currentNode, out destination);
             agent.SetDestination(destination);
@@ -72,16 +76,56 @@ public class EnemyController : MonoBehaviour {
         agent.Warp(resetLocation);
     }
 
+    private  Vector3 resetLocation = new Vector3(0, 0, 0);
+
     public void GhostEaten()
     {
-        Vector3 resetLocation = new Vector3(0, 0, 0);
-        agent.SetDestination(resetLocation);
-        isFrozen = true;
+            agent.Warp(resetLocation);
+            isMovable = false;
+    }
+
+    private bool isFlashing;
+
+    public void FlashGhosts(bool isFlashing)
+    {
+        this.isFlashing = isFlashing;
+
+        if (isFlashing)
+        {
+            StartCoroutine(Flash());
+        }
+    }
+
+    private IEnumerator Flash()
+    {
+        bool isColorOne = true;
+
+        while (isFlashing)
+        {
+            if (isColorOne)
+            {
+                material.color = Color.red;
+            }
+            else
+            {
+                material.color = Color.blue;
+            }
+
+            isColorOne = !isColorOne;
+
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        material.color = defaultColor;
     }
 
     public void SetGhostMovable(bool isMovable)
     {
-        isFrozen = false;
+        this.isMovable = isMovable;
+        if (isMovable)
+        {
+            SetNewDestination();
+        }
     }
 
     private void LateUpdate()

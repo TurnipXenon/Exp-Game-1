@@ -2,6 +2,7 @@
 using UnityEngine.AI;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 // todo add discrete movement (round location)
 
@@ -15,19 +16,33 @@ public class PlayerManager : MonoBehaviour
     public string gameOverMessage;
     public PacdotScript pacdotScript;
     public EnemyScript enemyScript;
+    public MonoBehaviour playerWithMobility;
 
     public NavMeshAgent agent;
  
     public Vector3 startPosition;
     private int livesLeft = 0;
     private int score = 0;
+    private static Mobility playerMobility;
 
     // Use this for initialization
     void Start()
     {
+        if (playerWithMobility is Mobility )
+        {
+            playerMobility = (Mobility)playerWithMobility;
+        }
+        else
+        {
+            throw new Exception("Player Mobility not interface of CharacterInterface.Mobility");
+        }
+
         livesLeft = startLifeCount;
         gameOverText.text = "";
         SetScoreText();
+        endTime = 0.0f;
+        levelNumber = 1;
+        StartCoroutine(StartLevel());
     }
 
     public float spawnOffset;
@@ -41,20 +56,44 @@ public class PlayerManager : MonoBehaviour
         bool gameContinue = pacdotScript.RemoveOnePacdot();
         if (!gameContinue)
         {
-            // todo change to win condition
-            // reset enemy
-            ResetPlayer();
-            enemyScript.ResetEnemies();
-            // reset pacdots
-            pacdotScript.ResetPacdots();
+            StartCoroutine(StartLevel());
         }
 
         return gameContinue;
     }
 
+    public float entryPauseTime;
+    private int levelNumber;
+
+    private IEnumerator StartLevel()
+    {
+        // todo change to win condition
+        // reset enemy
+
+        // pause game here
+        // todo: show stage level
+
+        ResetPlayer();
+        enemyScript.ResetEnemies();
+        pacdotScript.ResetPacdots();
+
+        // pause game
+        SetAllMovable(false);
+        yield return new WaitForSeconds(entryPauseTime);
+        SetAllMovable(true);
+        
+        Debug.Log("Start level " + levelNumber.ToString());
+    }
+
+    private void SetAllMovable(bool isMovable)
+    {
+        enemyScript.SetAllGhostsMovable(isMovable);
+        playerMobility.SetMovable(isMovable);
+    }
+
     private void CollectSpecialPacdot()
     {
-        StartCoroutine(SetInvincible(false));
+        StartCoroutine(SetPacdotInvincibility());
 
     }
 
@@ -98,7 +137,7 @@ public class PlayerManager : MonoBehaviour
                 {
                     // todo dead animation or transition here
                     ResetPlayer();
-                    StartCoroutine(SetInvincible(true));
+                    StartCoroutine(SetJustDiedInvincibility());
                 }
             }
             else if (edibleGhost)
@@ -110,6 +149,7 @@ public class PlayerManager : MonoBehaviour
 
     public void ResetPlayer()
     {
+        edibleGhost = false;
         agent.Warp(startPosition);
     }
 
@@ -124,6 +164,52 @@ public class PlayerManager : MonoBehaviour
     public float shortSafeTime;
     public float longSafeTime;
     private bool edibleGhost = false;
+
+    public IEnumerator SetJustDiedInvincibility()
+    {
+        isSafe = true;
+        yield return new WaitForSeconds(shortSafeTime);
+        isSafe = false;
+    }
+
+    private static float endTime;
+
+    // todo remove non looping part in ienumerator and make a func for it
+
+    public IEnumerator SetPacdotInvincibility()
+    {
+        if (Time.time < endTime)
+        {
+
+            //Debug.Log("Current time: " + Time.time.ToString());
+            //Debug.Log("End time: " + endTime.ToString());
+            endTime += longSafeTime;
+
+        }
+        else
+        {
+
+            endTime = Time.time + longSafeTime;
+            isSafe = true;
+            edibleGhost = true;
+            enemyScript.SetGhostsVulnerable(true);
+            //Debug.Log("Current time: " + Time.time.ToString());
+            //Debug.Log("End time: " + endTime.ToString());
+            
+            while (Time.time < endTime)
+            {
+                yield return new WaitForSeconds(0.5f);
+            }
+
+            enemyScript.SetGhostsVulnerable(false);
+            isSafe = false;
+            edibleGhost = false;
+            enemyScript.SetAllGhostsMovable(true);
+
+        }
+
+        yield return new WaitForEndOfFrame();
+    }
 
     public IEnumerator SetInvincible(bool isFast)
     {

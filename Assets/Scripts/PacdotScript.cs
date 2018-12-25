@@ -20,7 +20,7 @@ public class PacdotScript : MonoBehaviour
     {
         foreach (Transform item in transformList)
         {
-            if (item.CompareTag("Collectible"))
+            if (item.CompareTag("Collectible") || item.CompareTag("Special Collectible"))
             {
                 pacdotMaxCount++;
             }
@@ -33,7 +33,7 @@ public class PacdotScript : MonoBehaviour
         Transform[] transformList = GetComponentsInChildren<Transform>(true);
         foreach (Transform item in transformList)
         {
-            if (item.CompareTag("Collectible"))
+            if (item.CompareTag("Collectible") || item.CompareTag("Special Collectible"))
             {
                 item.gameObject.SetActive(true);
             }

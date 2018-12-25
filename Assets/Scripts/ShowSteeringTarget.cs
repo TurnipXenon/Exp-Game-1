@@ -17,6 +17,5 @@ public class ShowSteeringTarget : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        target.transform.position = agent.steeringTarget;
     }
 }

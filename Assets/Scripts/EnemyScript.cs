@@ -17,7 +17,7 @@ public class EnemyScript : MonoBehaviour {
                 {
                     Physics.IgnoreCollision(col1, col2, true);
                     count++;
-                    Debug.Log("Ignoring Colliders Count: " + count);
+                    //Debug.Log("Ignoring Colliders Count: " + count);
                 }
             }
         }
@@ -36,7 +36,33 @@ public class EnemyScript : MonoBehaviour {
     {
         foreach (EnemyController item in GetComponentsInChildren<EnemyController>())
         {
-            item.SetGhostMovable(true);
+            item.SetGhostMovable(isMovable);
+        }
+    }
+
+    private bool isVulnerable;
+
+    public void SetGhostsVulnerable(bool isVulnerable)
+    {
+        // set vulnerable when not yet vulnerable
+        if (isVulnerable && !this.isVulnerable)
+        {
+            FlashGhosts(true);
+        }
+        // set invulnerable when vulnerable
+        else if (!isVulnerable && this.isVulnerable)
+        {
+            FlashGhosts(false);
+        }
+    }
+
+    private void FlashGhosts(bool shouldFlash)
+    {
+        isVulnerable = shouldFlash;
+
+        foreach (EnemyController item in GetComponentsInChildren<EnemyController>())
+        {
+            item.FlashGhosts(shouldFlash);
         }
     }
 }

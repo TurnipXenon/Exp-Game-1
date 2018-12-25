@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerKeyController : MonoBehaviour
+public class PlayerKeyController : MonoBehaviour, Mobility
 {
     public float speed;
     public float discreteIncrement;
@@ -14,10 +14,12 @@ public class PlayerKeyController : MonoBehaviour
     private Rigidbody rb;
 
     private float[] movement = { 1, 0 };
+    private bool isMovable;
 
     // Use this for initialization
     void Start()
     {
+        isMovable = true;
         rb = GetComponent<Rigidbody>();
     }
 
@@ -32,6 +34,18 @@ public class PlayerKeyController : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.velocity = new Vector3(movement[IND_HORIZONTAL] * speed, 0.0f, movement[IND_VERTICAL] * speed);
+        if (isMovable)
+        {
+            rb.velocity = new Vector3(movement[IND_HORIZONTAL] * speed, 0.0f, movement[IND_VERTICAL] * speed);
+        }
+        else
+        {
+            rb.velocity = Vector3.zero;
+        }
+    }
+
+    public void SetMovable(bool isMovable)
+    {
+        this.isMovable = isMovable;
     }
 }
