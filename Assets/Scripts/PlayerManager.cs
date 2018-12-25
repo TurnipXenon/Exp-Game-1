@@ -13,6 +13,7 @@ public class PlayerManager : MonoBehaviour
     public Text scoreText;
     public Text lifeText;
     public Text gameOverText;
+    public Text levelText;
     public string gameOverMessage;
     public PacdotScript pacdotScript;
     public EnemyScript enemyScript;
@@ -39,10 +40,11 @@ public class PlayerManager : MonoBehaviour
 
         livesLeft = startLifeCount;
         gameOverText.text = "";
+        levelText.text = "";
         SetScoreText();
         endTime = 0.0f;
-        levelNumber = 1;
-        StartCoroutine(StartLevel());
+        levelNumber = 0;
+        NewLevel();
     }
 
     public float spawnOffset;
@@ -56,10 +58,17 @@ public class PlayerManager : MonoBehaviour
         bool gameContinue = pacdotScript.RemoveOnePacdot();
         if (!gameContinue)
         {
-            StartCoroutine(StartLevel());
+            NewLevel();
         }
 
         return gameContinue;
+    }
+
+    private void NewLevel()
+    {
+        levelNumber++;
+        StartCoroutine(StartLevel());
+        enemyScript.SetDifficulty(levelNumber);
     }
 
     public float entryPauseTime;
@@ -74,15 +83,18 @@ public class PlayerManager : MonoBehaviour
         // todo: show stage level
 
         ResetPlayer();
+        StopInvincibility();
         enemyScript.ResetEnemies();
         pacdotScript.ResetPacdots();
 
         // pause game
         SetAllMovable(false);
+        levelText.text = "Level " + levelNumber.ToString();
+
         yield return new WaitForSeconds(entryPauseTime);
+        levelText.text = "";
+
         SetAllMovable(true);
-        
-        Debug.Log("Start level " + levelNumber.ToString());
     }
 
     private void SetAllMovable(bool isMovable)
@@ -93,8 +105,27 @@ public class PlayerManager : MonoBehaviour
 
     private void CollectSpecialPacdot()
     {
-        StartCoroutine(SetPacdotInvincibility());
+        if (Time.time < endTime)
+        {
 
+            //Debug.Log("Current time: " + Time.time.ToString());
+            //Debug.Log("End time: " + endTime.ToString());
+            endTime += longSafeTime;
+
+        }
+        else
+        {
+
+            endTime = Time.time + longSafeTime;
+            isSafe = true;
+            edibleGhost = true;
+            enemyScript.SetGhostsVulnerable(true);
+            //Debug.Log("Current time: " + Time.time.ToString());
+            //Debug.Log("End time: " + endTime.ToString());
+
+            invincibilityTimer = InvincibitliyTimer();
+            StartCoroutine(invincibilityTimer);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -142,6 +173,7 @@ public class PlayerManager : MonoBehaviour
             }
             else if (edibleGhost)
             {
+                //Debug.Log("Ghost was eaten (Level " + levelNumber.ToString() + ")");
                 other.GetComponent<EnemyController>().GhostEaten();
             }
         }
@@ -176,39 +208,31 @@ public class PlayerManager : MonoBehaviour
 
     // todo remove non looping part in ienumerator and make a func for it
 
-    public IEnumerator SetPacdotInvincibility()
+    private IEnumerator invincibilityTimer = null;
+
+    private void StopInvincibility()
     {
-        if (Time.time < endTime)
+        if (invincibilityTimer != null)
         {
-
-            //Debug.Log("Current time: " + Time.time.ToString());
-            //Debug.Log("End time: " + endTime.ToString());
-            endTime += longSafeTime;
-
-        }
-        else
-        {
-
-            endTime = Time.time + longSafeTime;
-            isSafe = true;
-            edibleGhost = true;
-            enemyScript.SetGhostsVulnerable(true);
-            //Debug.Log("Current time: " + Time.time.ToString());
-            //Debug.Log("End time: " + endTime.ToString());
-            
-            while (Time.time < endTime)
-            {
-                yield return new WaitForSeconds(0.5f);
-            }
-
-            enemyScript.SetGhostsVulnerable(false);
-            isSafe = false;
-            edibleGhost = false;
-            enemyScript.SetAllGhostsMovable(true);
-
+            StopCoroutine(invincibilityTimer);
+            invincibilityTimer = null;
         }
 
-        yield return new WaitForEndOfFrame();
+        endTime = 0; //  reset for cases like invincibility still happening while new level
+        enemyScript.SetGhostsVulnerable(false);
+        isSafe = false;
+        edibleGhost = false;
+        enemyScript.SetAllGhostsMovable(true);
+    }
+
+    private IEnumerator InvincibitliyTimer()
+    {
+        while (Time.time < endTime)
+        {
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        StopInvincibility();
     }
 
     public IEnumerator SetInvincible(bool isFast)

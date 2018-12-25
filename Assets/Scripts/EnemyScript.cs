@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyScript : MonoBehaviour {
 
@@ -29,6 +30,7 @@ public class EnemyScript : MonoBehaviour {
         foreach (EnemyController item in transformList)
         {
             item.WarpToOrigin();
+            item.FlashGhosts(false);
         }
     }
 
@@ -63,6 +65,25 @@ public class EnemyScript : MonoBehaviour {
         foreach (EnemyController item in GetComponentsInChildren<EnemyController>())
         {
             item.FlashGhosts(shouldFlash);
+        }
+    }
+
+    public float maxAcceleration;
+    public float accelerationIncrement;
+
+    private float baseAcceleration = 1;
+
+    public void SetDifficulty(int level)
+    {
+        float targetAcceleration = baseAcceleration + (accelerationIncrement * (level - 1));
+        if (targetAcceleration > maxAcceleration)
+        {
+            targetAcceleration = maxAcceleration;
+        }
+
+        foreach (NavMeshAgent item in GetComponentsInChildren<NavMeshAgent>())
+        {
+            item.acceleration = targetAcceleration;
         }
     }
 }
