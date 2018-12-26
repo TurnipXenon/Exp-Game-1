@@ -4,16 +4,23 @@ using UnityEngine.UI;
 using System.Collections;
 using System;
 
-// todo add discrete movement (round location)
+// todo player being targeted
+// todo player being seen
+// todo ghost can no longer be eaten
+// todo when ghost stuck inside make them go wild
 
 public class PlayerManager : MonoBehaviour
 {
     public int startLifeCount = 3;
     public int scoreIncrement = 100;
+
+    // UI components
     public Text scoreText;
-    public Text lifeText;
     public Text gameOverText;
     public Text levelText;
+    public GameObject parentLifeSprites;
+    public Sprite lifeSprite;
+
     public string gameOverMessage;
     public PacdotScript pacdotScript;
     public EnemyScript enemyScript;
@@ -39,12 +46,48 @@ public class PlayerManager : MonoBehaviour
         }
 
         livesLeft = startLifeCount;
+        SetLifeSprites();
+
         gameOverText.text = "";
         levelText.text = "";
-        SetScoreText();
+        SetScoreText(0);
+
         endTime = 0.0f;
         levelNumber = 0;
         NewLevel();
+    }
+
+    public float spriteScale;
+    public float spriteOffset;
+
+    private void SetLifeSprites()
+    {
+        Image[] spriteList = parentLifeSprites.GetComponentsInChildren<Image>();
+        int lenSprites = spriteList.Length;
+        //Debug.Log("Initial lenSprites: " + lenSprites.ToString());
+
+        while (lenSprites > livesLeft)
+        {
+            // todo remove
+            lenSprites--;
+            Destroy(spriteList[lenSprites]);
+        }
+
+        while (lenSprites < livesLeft)
+        {
+            // from https://gamedev.stackexchange.com/a/102432
+            GameObject obj = new GameObject();
+            Image image = obj.AddComponent<Image>();
+            image.sprite = lifeSprite;
+            RectTransform rectTransform = obj.GetComponent<RectTransform>();
+            rectTransform.localScale = new Vector3(spriteScale, spriteScale, spriteScale);
+            rectTransform.SetParent(parentLifeSprites.transform);
+            float xPos = lenSprites * spriteOffset;
+            rectTransform.anchoredPosition = new Vector2(xPos,0);
+            obj.SetActive(true);
+            lenSprites++;
+            //Debug.Log(lenSprites.ToString() + " < " + livesLeft.ToString() + ": " + (lenSprites < livesLeft).ToString());
+        }
     }
 
     public float spawnOffset;
@@ -52,8 +95,7 @@ public class PlayerManager : MonoBehaviour
     private bool CollectPacdot(Collider other)
     {
         other.gameObject.SetActive(false);
-        score += scoreIncrement;
-        SetScoreText();
+        SetScoreText(scoreIncrement);
 
         bool gameContinue = pacdotScript.RemoveOnePacdot();
         if (!gameContinue)
@@ -67,6 +109,10 @@ public class PlayerManager : MonoBehaviour
     private void NewLevel()
     {
         levelNumber++;
+        if (levelNumber > 1)
+        {
+            SetScoreText(scoreIncrement * 150);
+        }
         StartCoroutine(StartLevel());
         enemyScript.SetDifficulty(levelNumber);
     }
@@ -99,8 +145,8 @@ public class PlayerManager : MonoBehaviour
 
     private void SetAllMovable(bool isMovable)
     {
-        enemyScript.SetAllGhostsMovable(isMovable);
         playerMobility.SetMovable(isMovable);
+        enemyScript.SetAllGhostsMovable(isMovable);
     }
 
     private void CollectSpecialPacdot()
@@ -157,7 +203,7 @@ public class PlayerManager : MonoBehaviour
             if (!isSafe)
             {
                 livesLeft--;
-                SetLifeCount();
+                SetLifeSprites();
 
                 if (livesLeft <= 0)
                 {
@@ -183,13 +229,6 @@ public class PlayerManager : MonoBehaviour
     {
         edibleGhost = false;
         agent.Warp(startPosition);
-    }
-
-    // todo: placeholder
-    private void SetLifeCount()
-    {
-        lifeText.text = "Lives left: " + livesLeft.ToString();
-
     }
 
     private bool isSafe = false;
@@ -255,8 +294,9 @@ public class PlayerManager : MonoBehaviour
         Debug.Log("No Longer Safe");
     }
 
-    private void SetScoreText()
+    private void SetScoreText(int scoreIncrement)
     {
+        score += scoreIncrement;
         scoreText.text = "Score: " + score.ToString();
     }
 }
