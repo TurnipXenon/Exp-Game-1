@@ -9,7 +9,7 @@ using System;
 // todo ghost can no longer be eaten
 // todo when ghost stuck inside make them go wild
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManagerBackup : MonoBehaviour
 {
     public int startLifeCount;
     public MonoBehaviour playerWithMobility;
@@ -34,9 +34,6 @@ public class PlayerManager : MonoBehaviour
         }
 
         livesLeft = startLifeCount;
-
-        // start new level here to avoid null reference
-        gameControl.NewLevel();
     }
 
 
@@ -96,7 +93,7 @@ public class PlayerManager : MonoBehaviour
                     StartCoroutine(SetJustDiedInvincibility());
                 }
             }
-            else if (gameControl.edibleGhost)
+            else if (edibleGhost)
             {
                 //Debug.Log("Ghost was eaten (Level " + levelNumber.ToString() + ")");
                 other.GetComponent<EnemyController>().GhostEaten();
@@ -106,13 +103,14 @@ public class PlayerManager : MonoBehaviour
 
     public void ResetPlayer()
     {
-        gameControl.edibleGhost = false;
+        edibleGhost = false;
         agent.Warp(startPosition);
     }
 
     private bool isSafe = false;
     public float shortSafeTime;
     public float longSafeTime;
+    private bool edibleGhost = false;
 
     public IEnumerator SetJustDiedInvincibility()
     {
@@ -138,7 +136,7 @@ public class PlayerManager : MonoBehaviour
         endTime = 0; //  reset for cases like invincibility still happening while new level
         gameControl.SetGhostsVulnerable(false);
         isSafe = false;
-        gameControl.edibleGhost = false;
+        edibleGhost = false;
         gameControl.SetAllGhostsMovable(true);
     }
 
@@ -160,13 +158,13 @@ public class PlayerManager : MonoBehaviour
         if (!isFast)
         {
             // do when eating special
-            gameControl.edibleGhost = true;
+            edibleGhost = true;
         }
         yield return new WaitForSeconds(waitTime);
         isSafe = false;
         if (!isFast)
         {
-            gameControl.edibleGhost = false;
+            edibleGhost = false;
             gameControl.SetAllGhostsMovable(true);
         }
         Debug.Log("No Longer Safe");
@@ -179,7 +177,7 @@ public class PlayerManager : MonoBehaviour
 
     public void SetMovable(bool isMovable)
     {
-        playerMobility.SetMovable(isMovable);
+        playerMobility.SetMovable(true);
     }
 
     public void ResetPosition()

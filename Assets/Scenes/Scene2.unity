@@ -18955,7 +18955,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!195 &1900517621
 NavMeshAgent:
@@ -18992,22 +18992,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startLifeCount: 3
-  scoreIncrement: 10
-  scoreText: {fileID: 1296738060}
-  gameOverText: {fileID: 117461327}
-  levelText: {fileID: 271654705}
-  parentLifeSprites: {fileID: 102068293}
-  lifeSprite: {fileID: 21300000, guid: 6b268f6f5f073844a9f9c69c525fa213, type: 3}
-  gameOverMessage: Game Over
-  pacdotScript: {fileID: 683646926}
-  enemyScript: {fileID: 755817973}
   playerWithMobility: {fileID: 1900517619}
   agent: {fileID: 1900517621}
   startPosition: {x: 0, y: 0.5, z: -5}
-  spriteScale: 0.2
-  spriteOffset: 25
   spawnOffset: 0.3
-  entryPauseTime: 3
+  gameControl: {fileID: 1968093987}
   shortSafeTime: 1
   longSafeTime: 10
 --- !u!1001 &1902612313
@@ -20054,6 +20043,64 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1968039561}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1968093985
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1968093986}
+  - component: {fileID: 1968093987}
+  m_Layer: 0
+  m_Name: GameControl
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1968093986
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968093985}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: -5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1968093987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968093985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a005b227679778341925ec4a9cad563c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreIncrement: 10
+  scoreText: {fileID: 1296738060}
+  gameOverText: {fileID: 117461327}
+  levelText: {fileID: 271654705}
+  parentLifeSprites: {fileID: 102068293}
+  lifeSprite: {fileID: 21300000, guid: 6b268f6f5f073844a9f9c69c525fa213, type: 3}
+  gameOverMessage: Game Over
+  pacdotScript: {fileID: 683646926}
+  enemyScript: {fileID: 755817973}
+  playerManager: {fileID: 1900517623}
+  entryPauseTime: 3
+  spriteScale: 0.25
+  spriteOffset: 2.5
+  shortSafeTime: 2
+  longSafeTime: 10
 --- !u!1001 &1977513877
 PrefabInstance:
   m_ObjectHideFlags: 0

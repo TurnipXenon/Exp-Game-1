@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour {
 
-    public NodeScript nodeScript;
+    public NodeManager nodeScript;
     public NavMeshAgent agent;
 
     private Material material;

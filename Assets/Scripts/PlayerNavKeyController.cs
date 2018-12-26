@@ -13,8 +13,8 @@ public class PlayerNavKeyController : MonoBehaviour
     public Text lifeText;
     public Text gameOverText;
     public string gameOverMessage;
-    public PacdotScript pacdotScript;
-    public EnemyScript enemyScript;
+    public PacdotManager pacdotScript;
+    public EnemyManager enemyScript;
 
     public float movementFrame = 10.0f;
     public float incrementRadius = 0.5f;

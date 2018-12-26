@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PacdotScript : MonoBehaviour
+public class PacdotManager : MonoBehaviour
 {
     private int pacdotCount;
     private int pacdotMaxCount;
