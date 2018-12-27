@@ -19,10 +19,9 @@ public class PlayerManager : MonoBehaviour
     private int score = 0;
     private static Mobility playerMobility;
     public float spawnOffset;
-    public GameManager gameControl;
+    public LevelManager levelManager;
 
-    // Use this for initialization
-    void Start()
+    private void Awake()
     {
         if (playerWithMobility is Mobility)
         {
@@ -32,11 +31,12 @@ public class PlayerManager : MonoBehaviour
         {
             throw new Exception("Player Mobility not interface of CharacterInterface.Mobility");
         }
+    }
 
+    // Use this for initialization
+    void Start()
+    {
         livesLeft = startLifeCount;
-
-        // start new level here to avoid null reference
-        gameControl.NewLevel();
     }
 
 
@@ -44,10 +44,10 @@ public class PlayerManager : MonoBehaviour
     {
         other.gameObject.SetActive(false);
 
-        bool gameContinue = gameControl.CollectPacdot();
+        bool gameContinue = levelManager.CollectPacdot();
         if (!gameContinue)
         {
-            gameControl.NewLevel();
+            levelManager.NewLevel();
         }
 
         return gameContinue;
@@ -64,7 +64,7 @@ public class PlayerManager : MonoBehaviour
             if (CollectPacdot(other))
             {
                 // todo invincibility
-                this.isSafe = gameControl.CollectSpecialPacdot(this.isSafe);
+                this.isSafe = levelManager.CollectSpecialPacdot(this.isSafe);
             }
         }
         else if (other.CompareTag("SpawnPoint"))
@@ -82,12 +82,12 @@ public class PlayerManager : MonoBehaviour
             if (!isSafe)
             {
                 livesLeft--;
-                gameControl.SetLifeSprites();
+                levelManager.SetLifeSprites();
 
                 if (livesLeft <= 0)
                 {
                     gameObject.SetActive(false);
-                    gameControl.SetGameOver();
+                    levelManager.SetGameOver();
                 }
                 else
                 {
@@ -96,7 +96,7 @@ public class PlayerManager : MonoBehaviour
                     StartCoroutine(SetJustDiedInvincibility());
                 }
             }
-            else if (gameControl.edibleGhost)
+            else if (levelManager.edibleGhost)
             {
                 //Debug.Log("Ghost was eaten (Level " + levelNumber.ToString() + ")");
                 other.GetComponent<EnemyController>().GhostEaten();
@@ -106,7 +106,8 @@ public class PlayerManager : MonoBehaviour
 
     public void ResetPlayer()
     {
-        gameControl.edibleGhost = false;
+        levelManager.edibleGhost = false;
+        isSafe = false;
         agent.Warp(startPosition);
     }
 
@@ -136,10 +137,10 @@ public class PlayerManager : MonoBehaviour
         }
 
         endTime = 0; //  reset for cases like invincibility still happening while new level
-        gameControl.SetGhostsVulnerable(false);
+        levelManager.SetGhostsVulnerable(false);
         isSafe = false;
-        gameControl.edibleGhost = false;
-        gameControl.SetAllGhostsMovable(true);
+        levelManager.edibleGhost = false;
+        levelManager.SetAllGhostsMovable(true);
     }
 
     private IEnumerator InvincibitliyTimer()
@@ -160,14 +161,14 @@ public class PlayerManager : MonoBehaviour
         if (!isFast)
         {
             // do when eating special
-            gameControl.edibleGhost = true;
+            levelManager.edibleGhost = true;
         }
         yield return new WaitForSeconds(waitTime);
         isSafe = false;
         if (!isFast)
         {
-            gameControl.edibleGhost = false;
-            gameControl.SetAllGhostsMovable(true);
+            levelManager.edibleGhost = false;
+            levelManager.SetAllGhostsMovable(true);
         }
         Debug.Log("No Longer Safe");
     }

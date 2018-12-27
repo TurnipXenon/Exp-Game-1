@@ -19,7 +19,7 @@ public class PlayerManagerBackup : MonoBehaviour
     private int score = 0;
     private static Mobility playerMobility;
     public float spawnOffset;
-    public GameManager gameControl;
+    public LevelManager gameControl;
 
     // Use this for initialization
     void Start()

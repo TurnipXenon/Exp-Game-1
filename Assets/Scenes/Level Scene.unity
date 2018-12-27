@@ -18996,7 +18996,7 @@ MonoBehaviour:
   agent: {fileID: 1900517621}
   startPosition: {x: 0, y: 0.5, z: -5}
   spawnOffset: 0.3
-  gameControl: {fileID: 1968093987}
+  levelManager: {fileID: 1968093987}
   shortSafeTime: 1
   longSafeTime: 10
 --- !u!1001 &1902612313
@@ -20054,7 +20054,7 @@ GameObject:
   - component: {fileID: 1968093986}
   - component: {fileID: 1968093987}
   m_Layer: 0
-  m_Name: GameControl
+  m_Name: LevelManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20090,17 +20090,21 @@ MonoBehaviour:
   scoreText: {fileID: 1296738060}
   gameOverText: {fileID: 117461327}
   levelText: {fileID: 271654705}
+  textHighScore: {fileID: 1481635224}
   parentLifeSprites: {fileID: 102068293}
   lifeSprite: {fileID: 21300000, guid: 6b268f6f5f073844a9f9c69c525fa213, type: 3}
   gameOverMessage: Game Over
+  highScoreMessage: 'High Score: '
   pacdotScript: {fileID: 683646926}
   enemyScript: {fileID: 755817973}
   playerManager: {fileID: 1900517623}
   entryPauseTime: 3
-  spriteScale: 0.25
-  spriteOffset: 2.5
+  exitPauseTime: 3
+  spriteScale: 0.2
+  spriteOffset: 30
   shortSafeTime: 2
   longSafeTime: 10
+  edibleGhost: 0
 --- !u!1001 &1977513877
 PrefabInstance:
   m_ObjectHideFlags: 0

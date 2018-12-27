@@ -1,211 +1,121 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System.Runtime.Serialization.Formatters.Binary;
+using System;
+using System.IO;
 
-// todo move non player functions and details here
+public class GameManager : MonoBehaviour
+{
+    // build setting should follow this order
+    public static readonly int INDEX_SCENE_SPLASH = 0;
+    public static readonly int INDEX_SCENE_LEVEL = 1;
+    public static readonly int INDEX_SCENE_HIGH_SCORE = 2;
 
-public class GameManager : MonoBehaviour { 
+    private static GameManager instance;
+    private long highScore;
 
-    public int scoreIncrement;
-
-    // UI components
-    public Text scoreText;
-    public Text gameOverText;
-    public Text levelText;
-    public GameObject parentLifeSprites;
-    public Sprite lifeSprite;
-
-    public string gameOverMessage;
-    public PacdotManager pacdotScript;
-    public EnemyManager enemyScript;
-    public PlayerManager playerManager;
-
-    public float entryPauseTime;
-    private int levelNumber;
-    public float spriteScale;
-    public float spriteOffset;
-
-    private string topScorer;
-    private int score = 0;
-
-    // Use this for initialization
-    void Start()
+    // from https://unity3d.com/learn/tutorials/projects/2d-roguelike-tutorial/writing-game-manager
+    private void Awake()
     {
-        SetLifeSprites();
+        //Check if instance already exists
+        if (instance == null)
 
-        gameOverText.text = "";
-        levelText.text = "";
-        SetScoreText(0);
+            //if not, set instance to this
+            instance = this;
 
-        endTime = 0.0f;
-        levelNumber = 0;
+        //If instance already exists and it's not this:
+        else if (instance != this)
+
+            //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
+            Destroy(gameObject);
+
+        //Sets this to not be destroyed when reloading scene
+        DontDestroyOnLoad(gameObject);
     }
 
-    public void SetLifeSprites()
+    public static GameManager getInstance()
     {
-        int livesLeft = playerManager.GetLivesLeft();
-        Image[] spriteList = parentLifeSprites.GetComponentsInChildren<Image>();
-        int lenSprites = spriteList.Length;
-        //Debug.Log("Initial lenSprites: " + lenSprites.ToString());
+        return instance;
+    }
 
-        while (lenSprites > livesLeft)
+    private readonly string HIGHSCORE_DAT_PATH = "/highScore.dat";
+
+    public HighScoreData GetHighScore()
+    {
+        string highScoreName = null;
+
+        if (File.Exists(Application.persistentDataPath + HIGHSCORE_DAT_PATH))
         {
-            // todo remove
-            lenSprites--;
-            Destroy(spriteList[lenSprites]);
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(Application.persistentDataPath + HIGHSCORE_DAT_PATH, FileMode.Open);
+            HighScoreData data = (HighScoreData)bf.Deserialize(file);
+            file.Close();
+
+            this.highScore = data.highScoreNumber;
+            highScoreName = data.highScoreName;
         }
 
-        while (lenSprites < livesLeft)
+        return new HighScoreData(this.highScore, highScoreName);
+    }
+
+    private void SaveHighScore(long newHighScore, string name)
+    {
+        this.highScore = newHighScore;
+
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Create(Application.persistentDataPath + HIGHSCORE_DAT_PATH);
+
+        HighScoreData data = new HighScoreData(this.highScore, name);
+
+        bf.Serialize(file, data);
+        file.Close();
+    }
+
+    public bool SetNewHighScore(long newScore, string name)
+    {
+        bool isScoreTheHighest = IsScoreTheHighest(newScore);
+
+        if (isScoreTheHighest)
         {
-            // from https://gamedev.stackexchange.com/a/102432
-            GameObject obj = new GameObject();
-            Image image = obj.AddComponent<Image>();
-            image.sprite = lifeSprite;
-            RectTransform rectTransform = obj.GetComponent<RectTransform>();
-            rectTransform.localScale = new Vector3(spriteScale, spriteScale, spriteScale);
-            rectTransform.SetParent(parentLifeSprites.transform);
-            float xPos = lenSprites * spriteOffset;
-            rectTransform.anchoredPosition = new Vector2(xPos, 0);
-            obj.SetActive(true);
-            lenSprites++;
-            //Debug.Log(lenSprites.ToString() + " < " + livesLeft.ToString() + ": " + (lenSprites < livesLeft).ToString());
-        }
-    }
-
-    public void NewLevel()
-    {
-        levelNumber++;
-        if (levelNumber > 1)
-        {
-            SetScoreText(scoreIncrement * 150);
-        }
-        StartCoroutine(StartLevel());
-        enemyScript.SetDifficulty(levelNumber);
-    }
-
-    private IEnumerator StartLevel()
-    {
-        Debug.Log("We went here");
-        // todo change to win condition
-        // reset enemy
-
-        // pause game here
-        // todo: show stage level
-
-        ResetPlayer();
-        StopInvincibility();
-        enemyScript.ResetEnemies();
-        pacdotScript.ResetPacdots();
-
-        // pause game
-        SetAllMovable(false);
-        levelText.text = "Level " + levelNumber.ToString();
-
-        yield return new WaitForSeconds(entryPauseTime);
-        levelText.text = "";
-
-        SetAllMovable(true);
-    }
-
-    private void SetAllMovable(bool isMovable)
-    {
-        playerManager.SetMovable(isMovable);
-        enemyScript.SetAllGhostsMovable(isMovable);
-    }
-
-    public bool CollectSpecialPacdot(bool isSafe)
-    {
-        if (Time.time < endTime)
-        {
-
-            //Debug.Log("Current time: " + Time.time.ToString());
-            //Debug.Log("End time: " + endTime.ToString());
-            endTime += longSafeTime;
-
+            SaveHighScore(newScore, name);
         }
         else
         {
-
-            endTime = Time.time + longSafeTime;
-            isSafe = true;
-            edibleGhost = true;
-            enemyScript.SetGhostsVulnerable(true);
-            //Debug.Log("Current time: " + Time.time.ToString());
-            //Debug.Log("End time: " + endTime.ToString());
-
-            invincibilityTimer = InvincibitliyTimer();
-            StartCoroutine(invincibilityTimer);
+            Debug.LogError("Set new high score ignores score that are not > high score");
         }
 
-        return isSafe;
+        return isScoreTheHighest;
     }
 
-    public void ResetPlayer()
+    private bool IsScoreTheHighest(long score)
     {
-        edibleGhost = false;
-        playerManager.ResetPosition();
+        return score > highScore;
     }
 
-    private bool isSafe = false;
-    public float shortSafeTime;
-    public float longSafeTime;
-    public bool edibleGhost = false;
-    private static float endTime;
-
-    // todo remove non looping part in ienumerator and make a func for it
-
-    private IEnumerator invincibilityTimer = null;
-
-    // set bool as false
-    private void StopInvincibility()
+    public void loadScene(int index)
     {
-        if (invincibilityTimer != null)
-        {
-            StopCoroutine(invincibilityTimer);
-            invincibilityTimer = null;
-        }
+        SceneManager.LoadScene(index, LoadSceneMode.Single);
+    }
+}
 
-        endTime = 0; //  reset for cases like invincibility still happening while new level
-        enemyScript.SetGhostsVulnerable(false);
-        edibleGhost = false;
-        enemyScript.SetAllGhostsMovable(true);
+
+[Serializable]
+public class HighScoreData
+{
+    public long highScoreNumber;
+    public string highScoreName;
+    private int minimumNameLen = 3;
+
+    public HighScoreData(long highScore, string highScoreName)
+    {
+        this.highScoreNumber = highScore;
+        this.highScoreName = highScoreName;
     }
 
-    private IEnumerator InvincibitliyTimer()
+    public bool isAvailable()
     {
-        while (Time.time < endTime)
-        {
-            yield return new WaitForSeconds(0.5f);
-        }
-
-        StopInvincibility();
-    }
-
-    private void SetScoreText(int scoreIncrement)
-    {
-        score += scoreIncrement;
-        scoreText.text = "Score: " + score.ToString();
-    }
-
-    public bool CollectPacdot()
-    {
-        SetScoreText(scoreIncrement);
-        return pacdotScript.RemoveOnePacdot();
-    }
-
-    public void SetGameOver()
-    {
-        gameOverText.text = gameOverMessage;
-    }
-
-    public void SetAllGhostsMovable(bool isMovable)
-    {
-        enemyScript.SetAllGhostsMovable(isMovable);
-    }
-
-    public void SetGhostsVulnerable(bool isVulnerable)
-    {
-        enemyScript.SetGhostsVulnerable(isVulnerable);
+        return (highScoreName != null) && (highScoreName.Length >= minimumNameLen);
     }
 }
