@@ -21,6 +21,10 @@ public class PlayerManager : MonoBehaviour
     public float spawnOffset;
     public LevelManager levelManager;
 
+    private bool isSafe = false;
+    public float shortSafeTime;
+    public float longSafeTime;
+
     private void Awake()
     {
         if (playerWithMobility is Mobility)
@@ -110,10 +114,6 @@ public class PlayerManager : MonoBehaviour
         isSafe = false;
         agent.Warp(startPosition);
     }
-
-    private bool isSafe = false;
-    public float shortSafeTime;
-    public float longSafeTime;
 
     public IEnumerator SetJustDiedInvincibility()
     {
