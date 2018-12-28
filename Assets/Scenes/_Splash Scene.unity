@@ -921,8 +921,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   btnContinue: {fileID: 962701202}
-  txtHighScoreNumber: {fileID: 935129629}
-  txtHighScoreName: {fileID: 1104202070}
+  txtHighScoreNumber: {fileID: 935129631}
+  txtHighScoreName: {fileID: 1104202072}
 --- !u!1 &1584205777
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,33 +1,38 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class SplashManager : MonoBehaviour
 {
     public GameObject btnContinue;
-    public GameObject txtHighScoreNumber;
-    public GameObject txtHighScoreName;
+    public Text txtHighScoreNumber;
+    public Text txtHighScoreName;
 
     private GameManager gameManager;
-    private HighScoreData gameData;
+    private HighScoreData highScoreData;
     private static readonly string LEVEL_SCENE = "Level Scene";
 
     private void Start()
     {
         // get high score data
         gameManager = GameManager.getInstance();
-        gameData = gameManager.GetHighScore();
+        highScoreData = gameManager.GetHighScore();
 
-        if (gameData.isAvailable())
+        if (highScoreData.isAvailable())
         {
             // display results
+            txtHighScoreName.gameObject.SetActive(true);
+            txtHighScoreNumber.gameObject.SetActive(true);
+            txtHighScoreNumber.text = "Highscore: " + highScoreData.number.ToString();
+            txtHighScoreName.text = "by " + highScoreData.name;
         }
         else
         {
             // hide
-            txtHighScoreName.SetActive(false);
-            txtHighScoreNumber.SetActive(false);
+            txtHighScoreName.gameObject.SetActive(false);
+            txtHighScoreNumber.gameObject.SetActive(false);
         }
 
         // if no data
@@ -36,6 +41,6 @@ public class SplashManager : MonoBehaviour
 
     public void OnClick_BtnNewGame()
     {
-        gameManager.loadScene(GameManager.INDEX_SCENE_LEVEL);
+        GameManager.loadScene(GameManager.INDEX_SCENE_LEVEL);
     }
 }

@@ -44,7 +44,7 @@ public class LevelManager : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        textHighScore.text = highScoreMessage + highScoreData.highScoreNumber.ToString();
+        textHighScore.text = highScoreMessage + highScoreData.number.ToString();
 
         SetLifeSprites();
 
@@ -117,7 +117,7 @@ public class LevelManager : MonoBehaviour {
         pacdotScript.ResetPacdots();
 
         // pause game
-        Debug.Log(levelText != null);
+        //Debug.Log(levelText != null);
         SetAllMovable(false);
         levelText.text = "Level " + levelNumber.ToString();
 
@@ -232,16 +232,19 @@ public class LevelManager : MonoBehaviour {
     private void GoBack()
     {
         // check if high score
-        if (score > highScoreData.highScoreNumber)
+        if (score > highScoreData.number)
         {
             // true: go to high score screen
+            highScoreData.number = score;
+            gameManager.OverwriteData<HighScoreData>(GameManager.KEY_HIGH_SCORE_DATA, highScoreData);
+            GameManager.loadScene(GameManager.INDEX_SCENE_HIGH_SCORE);
         }
         else
         {
             // false: go back normally
+            GameManager.loadScene(GameManager.INDEX_SCENE_SPLASH);
         }
 
-        gameManager.loadScene(GameManager.INDEX_SCENE_SPLASH);
     }
 
     public void SetAllGhostsMovable(bool isMovable)

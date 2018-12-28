@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: 
     guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Scenes/Splash Scene.unity
+    path: Assets/Scenes/_Splash Scene.unity
     guid: 366a7574da4ea164c9519c5be7e413e7
   - enabled: 1
     path: Assets/Scenes/Level Scene.unity

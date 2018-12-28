@@ -13,17 +13,26 @@ public class GameManager : MonoBehaviour
     public static readonly int INDEX_SCENE_LEVEL = 1;
     public static readonly int INDEX_SCENE_HIGH_SCORE = 2;
 
+    public static readonly int KEY_HIGH_SCORE_DATA = 0;
+
     private static GameManager instance;
     private long highScore;
+    private Dictionary<int, Data> storedData;
 
     // from https://unity3d.com/learn/tutorials/projects/2d-roguelike-tutorial/writing-game-manager
     private void Awake()
     {
         //Check if instance already exists
         if (instance == null)
+        {
 
             //if not, set instance to this
             instance = this;
+
+            storedData = new Dictionary<int, Data>();
+
+        }
+
 
         //If instance already exists and it's not this:
         else if (instance != this)
@@ -40,7 +49,7 @@ public class GameManager : MonoBehaviour
         return instance;
     }
 
-    private readonly string HIGHSCORE_DAT_PATH = "/highScore.dat";
+    private readonly string HIGHSCORE_DAT_PATH = "/highScore2.dat";
 
     public HighScoreData GetHighScore()
     {
@@ -53,8 +62,8 @@ public class GameManager : MonoBehaviour
             HighScoreData data = (HighScoreData)bf.Deserialize(file);
             file.Close();
 
-            this.highScore = data.highScoreNumber;
-            highScoreName = data.highScoreName;
+            this.highScore = data.number;
+            highScoreName = data.name;
         }
 
         return new HighScoreData(this.highScore, highScoreName);
@@ -94,28 +103,50 @@ public class GameManager : MonoBehaviour
         return score > highScore;
     }
 
-    public void loadScene(int index)
+    public static void loadScene(int index)
     {
         SceneManager.LoadScene(index, LoadSceneMode.Single);
     }
+
+    public void OverwriteData<T>(int key, T data) where T : Data
+    {
+        storedData.Remove(key);
+        storedData.Add(key, (Data)data);
+    }
+
+    public T GetStoredData<T>(int key) where T : Data
+    {
+        Data data = null;
+        T convertedData = null;
+        storedData.TryGetValue(key, out data);
+
+        if (data is T)
+        {
+            convertedData = (T) data;
+        }
+
+        return convertedData;
+    }
 }
 
+[Serializable]
+public class Data { }
 
 [Serializable]
-public class HighScoreData
+public class HighScoreData : Data
 {
-    public long highScoreNumber;
-    public string highScoreName;
+    public long number;
+    public string name;
     private int minimumNameLen = 3;
 
     public HighScoreData(long highScore, string highScoreName)
     {
-        this.highScoreNumber = highScore;
-        this.highScoreName = highScoreName;
+        this.number = highScore;
+        this.name = highScoreName;
     }
 
     public bool isAvailable()
     {
-        return (highScoreName != null) && (highScoreName.Length >= minimumNameLen);
+        return (name != null) && (name.Length >= minimumNameLen);
     }
 }
